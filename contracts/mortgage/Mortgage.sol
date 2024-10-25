@@ -76,7 +76,6 @@ contract Mortgage is ERC721URIStorage, Ownable, AutomationCompatible {
      */
     function setMortgagePaymentAmount(uint256 _mortgagePaymentAmount) external onlyOwner {
         require(_mortgagePaymentAmount > 0, 'Mortgage payment amount must be greater than 0');
-        require( iRateType == IRateType.Variable, 'Only Variable rate mortgages can change the payment amount');
         mortgagePaymentAmount = _mortgagePaymentAmount;
     }
 

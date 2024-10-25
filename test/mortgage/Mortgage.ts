@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { Mortgage, MortgageTokenERC20 } from "../../typechain-types";
+import { Mortgage, TokenERC20 } from "../../typechain-types";
 
 describe("Mortgage Contract", function () {
 
@@ -9,14 +9,14 @@ describe("Mortgage Contract", function () {
     let owner: SignerWithAddress;
     let assetPropietary: SignerWithAddress;
     let debtor: SignerWithAddress;
-    let tokenERC20: MortgageTokenERC20;
+    let tokenERC20: TokenERC20;
 
     beforeEach(async function() {
         [owner, assetPropietary, debtor] = await ethers.getSigners();
         const assetPropietaryAddress = await assetPropietary.getAddress();
         const debtorAddress = await debtor.getAddress();
 
-        tokenERC20 = await ethers.deployContract("MortgageTokenERC20", ['DollarTest', 'DTS'], owner) as MortgageTokenERC20;
+        tokenERC20 = await ethers.deployContract("TokenERC20", ['DollarTest', 'DTS'], owner) as TokenERC20;
         await tokenERC20.connect(owner).mint(debtorAddress, 5000);
         const tokenERC20Address = await tokenERC20.getAddress();
 

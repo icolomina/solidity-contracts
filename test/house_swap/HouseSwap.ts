@@ -1,13 +1,13 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { HouseAsset, HouseSwap, HouseTestTokenERC20 } from "../typechain-types";
+import { HouseAsset, HouseSwap, TokenERC20 } from "../../typechain-types";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
 describe("House Swap Contract", function () {
 
   let houseSwapContract: HouseSwap;
   let houseAssetContract: HouseAsset;
-  let tokenERC20Contract: HouseTestTokenERC20;
+  let tokenERC20Contract: TokenERC20;
 
   let owner: SignerWithAddress;
   let originOwner: SignerWithAddress;
@@ -31,7 +31,7 @@ describe("House Swap Contract", function () {
     amountPayTargetToOrigin = 0;
 
     houseAssetContract = await ethers.deployContract("HouseAsset", ['HouseAsset', 'HSA'], owner) as HouseAsset;
-    tokenERC20Contract = await ethers.deployContract("HouseTestTokenERC20", ['DollarTest', 'DTS'], owner) as HouseTestTokenERC20;
+    tokenERC20Contract = await ethers.deployContract("TokenERC20", ['DollarTest', 'DTS'], owner) as TokenERC20;
     await houseAssetContract.connect(owner).assignToken(tokenIdOrigin, tokenUriOrigin, originOwnerAddress);
     await houseAssetContract.connect(owner).assignToken(tokenIdTarget, tokenUriTarget, targetOwnerAddress);
 

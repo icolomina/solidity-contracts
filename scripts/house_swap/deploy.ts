@@ -1,6 +1,6 @@
 import hre from "hardhat";
-import Token from "../ignition/modules/Token";
-import Asset from "../ignition/modules/Asset";
+import Token from "../../ignition/modules/Token";
+import Asset from "../../ignition/modules/Asset";
 
 
 async function main() {

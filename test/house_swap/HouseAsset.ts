@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { HouseAsset } from "../typechain-types/contracts/HouseAsset";
+import { HouseAsset } from "../../typechain-types/contracts/HouseAsset";
 
 describe("House Asset Contract", function () {
 
