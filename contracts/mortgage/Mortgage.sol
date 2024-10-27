@@ -6,8 +6,6 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import '@chainlink/contracts/src/v0.8/automation/AutomationCompatible.sol';
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-import "hardhat/console.sol"; 
-
 /**
  * This ERC 721 Token represents a unique mortgage. This means that, once deployed, the owner, debtor and token are assigned and no extra mints are allowed.
  * - mortgageOwner: Mortgage propietary

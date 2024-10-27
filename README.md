@@ -1,59 +1,35 @@
-# HouseSwap Smart Contract
+# Solidity Contracts
 ==========================
 
 ## Overview
-HouseSwap is an smart-contract built on Solidity and Hardhat, which allows users to swap their houses in a secure and trustless manner. This smart contract enables users to create, manage, and execute house swaps, ensuring a seamless and transparent experience.
+This repository contains a set of solidity smart contracts. Each of the contracts represents a specific situation and they can serve as a basis for developing more complex contracts or a decentralized application based on them.
 
-## Features
+> **Important**: This contracts have not been audited and should not be used directly in a production environment. 
 
-- **House Swap**: Enables users to swap their houses with other users.
-- **Offer Management**: Allows users to create, accept, and decline offers for house swaps.
-- **Payment Management**: Facilitates secure payment transfers between users.
-- **Contract Status**: Tracks the status of the swap contract, ensuring a smooth execution process.
-
-## Technical Details
-
-- **Blockchain**: Built for the Ethereum blockchain, utilizing Solidity as the programming language.
-- **Token Standard**: Utilizes the ERC20 token standard for payment transfers and ERC721 token standard to represent house assets.
-
-## Usage
-
-### Prerequisites
-
-- **Ethereum Wallet**: The contract can be used in a dapp. It only requires a compatible wallet (e.g., MetaMask) to interact with the contract. 
-- **ERC20 Token**: The contract utilizes an ERC20 token for payment transfers.
-- **ERC721 Token**: The contract utilizes an ERC721 contract to represent the house assets.
-
-### Deployment
-This project uses [Hardhat](https://hardhat.org/) as a development enviroment. To deploy de contract follow the next steps:
-
-#### Install dependencies using npm: 
+## Compile the contracts
 
 ```shell
 npm install
-```
-
-#### Compile the contracts
-
-```shell
 npx hardhat compile
 ```
 
-#### Test the contracts
+## Testing the contracts
 
 ```shell
 npx hardhat test
 ```
 
-#### Use the deployment script
-
-The deployment script uses two [ignition](https://hardhat.org/ignition/docs/guides/scripts) modules to deploy first the asset and the token. Then the script gets the asset contract and a signer and uses the asset **assignToken** function to assign a token id to the signer address. Then it deploys the Swap contract using both the asset and token addresses and the assigned token id.
+## Deploying the contracts
+You can deploy the contracts using the hardhat local node. The **scripts** folder contains a deploy script for each contract. You can execute them as shown bellow:
 
 ```shell
-npx hardhat run scripts/deploy.ts
+ npx hardhat run scripts/house_swap/deploy.ts
+ npx hardhat run scripts/mortgage/deploy.ts
+ npx hardhat run scripts/pay_order/deploy.ts
 ```
 
-
-
-
-
+## Contracts information
+1. [House Swap](/docs/house_swap.md)
+2. [Payment Orders](/docs/payment_order.md)
+3. [Mortgage Token](/docs/mortgage.md)
+4. [Event entrances](/docs/event_entrances.md)
