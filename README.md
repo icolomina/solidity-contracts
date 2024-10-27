@@ -1,4 +1,4 @@
-![tests status](https://github.com/icolomina/solidity-contracts/actions/workflows/tests.yml/badge.svg)
+![tests status](https://github.com/icolomina/solidity-contracts/actions/workflows/test.yml/badge.svg)
 
 # Solidity Contracts
 ==========================
