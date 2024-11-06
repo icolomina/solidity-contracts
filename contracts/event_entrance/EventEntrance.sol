@@ -4,7 +4,9 @@ pragma solidity ^0.8.24;
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-
+/// @title An Event Entrance Contract
+/// @author Ignacio Colomina
+/// @notice This contract is an ERC1155 multitoken contract that manages 5 event entrance tokens
 contract EventEntrance is ERC1155, Ownable {
 
     uint16 public constant VIP_ENTRANCE = 1;

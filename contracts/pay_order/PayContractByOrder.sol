@@ -8,9 +8,6 @@ interface IERC20 {
     function balanceOf(address account) external view returns (uint256);
 }
 
-// Uncomment this line to use console.log
- // import "hardhat/console.sol";
-
 contract PayContractByOrder {
     
     enum State { PENDING, PAID, FUNDS_RECEIVED }
@@ -39,8 +36,13 @@ contract PayContractByOrder {
         require(msg.sender == debtor, "Only the debtor can pay");
         require(state == State.PENDING, "The status must be pending");
 
-        IERC20(tokenERC20).transferFrom(debtor, creditor, amount);
-        state = State.PAID; 
+        state = State.PAID;
+        bool success = IERC20(tokenERC20).transferFrom(debtor, creditor, amount); 
+        if(!success) {
+            state = State.PENDING;
+            revert('Transfer failed');
+
+        }
         emit PaymentReceived(debtor, amount);
     }
 
