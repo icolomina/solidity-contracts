@@ -67,7 +67,6 @@ contract PayContractByCrediter {
         require(order.state == State.PENDING, "The state must be pending");
         require(IERC20(order.tokenERC20).balanceOf(order.debtor) >= order.amount, "The debtor must hold enought balance");
 
-        // Cambiar el estado a PAID
         order.state = State.PAID; 
         bool success = IERC20(order.tokenERC20).transferFrom(msg.sender, creditor, order.amount);
         if(!success) {
