@@ -69,7 +69,11 @@ contract PayContractByCrediter {
 
         // Cambiar el estado a PAID
         order.state = State.PAID; 
-        IERC20(order.tokenERC20).transferFrom(msg.sender, creditor, order.amount);
+        bool success = IERC20(order.tokenERC20).transferFrom(msg.sender, creditor, order.amount);
+        if(!success) {
+            order.state = State.PENDING;
+            revert('Transfer failed');
+        }
         emit PaymentOrderReceived(order.debtor, order.amount, orderId);
     }
 
