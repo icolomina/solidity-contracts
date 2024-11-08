@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+
 // ERC-20 interace
 interface IERC20 {
     function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
@@ -8,7 +10,7 @@ interface IERC20 {
     function balanceOf(address account) external view returns (uint256);
 }
 
-contract PayContractByCrediter {
+contract PayContractByCrediter is ReentrancyGuard {
     enum State { PENDING, PAID, FUNDS_RECEIVED }
 
     struct PaymentOrder {
@@ -61,18 +63,16 @@ contract PayContractByCrediter {
      *    - The Payment order must hold the PENDING status
      *    - The debtor must hold enougth balance to pay the order
      */
-    function pay(string memory orderId) external {
+    function pay(string memory orderId) nonReentrant() external {
         PaymentOrder storage order = paymentOrders[orderId];
         require(msg.sender == order.debtor, "Only the debtor can send thge payment");
         require(order.state == State.PENDING, "The state must be pending");
         require(IERC20(order.tokenERC20).balanceOf(order.debtor) >= order.amount, "The debtor must hold enought balance");
-
-        order.state = State.PAID; 
+ 
         bool success = IERC20(order.tokenERC20).transferFrom(msg.sender, creditor, order.amount);
-        if(!success) {
-            order.state = State.PENDING;
-            revert('Transfer failed');
-        }
+        require(success, 'Order payment has failed');
+        
+        order.state = State.PAID;
         emit PaymentOrderReceived(order.debtor, order.amount, orderId);
     }
 

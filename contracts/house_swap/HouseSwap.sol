@@ -2,9 +2,11 @@
 pragma solidity ^0.8.27;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "./HouseAsset.sol";
+import "hardhat/console.sol";
 
-contract HouseSwap {
+contract HouseSwap is ReentrancyGuard{
 
     HouseAsset houseAsset;
     IERC20 paymentToken;
@@ -80,7 +82,7 @@ contract HouseSwap {
      * Check whether the caller is the target owner (The address which offers a house to swap)
      */
     modifier isTargetOwner() {
-        require(msg.sender == targetOwner, 'Required origin owner');
+        require(msg.sender == targetOwner, 'Required target owner');
         _;
     }
 
@@ -116,16 +118,18 @@ contract HouseSwap {
      * Adds a new offer. 
      *   - The contract status must be INITIALIZED
      *   - The tokenId received must be greather than 0 and different of the originalTokenId
+     *   - The _targetTokenId must belong to the msg.sender 
      *
      * If those rules are correct, the function creates a new Offer, sets it int the swapOffers mapping and emits a NewOffer event
      */
     function addOffer(uint256 _targetTokenId, uint256 _amountPayOriginToTarget, uint256 _amountPayTargetToOrigin) external hasToBeInStatus(Statuses.INITIALIZED) {
         require(_targetTokenId > 0 && _targetTokenId != originTokenId, "Target token ID must be greater than 0");
         require(msg.sender != address(0), "Cannot be 0 address");
+        require(houseAsset.ownerOf(_targetTokenId) == msg.sender);
 
         string memory offerUri = houseAsset.tokenURI(_targetTokenId);
         Offer memory offer = Offer(
-            targetTokenId,
+            _targetTokenId,
             offerUri,
             _amountPayOriginToTarget,
             _amountPayTargetToOrigin
@@ -155,11 +159,12 @@ contract HouseSwap {
     {
         require(tokenId > 0 && tokenId != originTokenId, "Target token ID must be greater than 0");
         Offer memory offer = swapOffers[tokenId];
+        require(offer.tokenId > 0, 'Swap Offer does not exist');
 
         amountPayOriginToTarget = offer.amountPayOriginToTarget;
         amountPayTargetToOrigin = offer.amountPayTargetToOrigin;
-        targetOwner = payable(houseAsset.ownerOf(tokenId));
         targetTokenId = tokenId;
+        targetOwner = payable(houseAsset.ownerOf(offer.tokenId));
 
         if(amountPayOriginToTarget <= 0 && amountPayTargetToOrigin <= 0 ) {
             status = Statuses.PAID;
@@ -177,9 +182,9 @@ contract HouseSwap {
      *    - Contract status mut be ACCEPTED
      *    - Also see targetCanPay modifier
      */
-    function payFromTargetToOrigin() external isTargetOwner targetCanPay hasToBeInStatus(Statuses.ACCEPTED){
+    function payFromTargetToOrigin() nonReentrant() external isTargetOwner targetCanPay hasToBeInStatus(Statuses.ACCEPTED){
         bool success = paymentToken.transferFrom(targetOwner, originOwner, amountPayTargetToOrigin);
-        require(success, "Transfer from target to origin sent.");
+        require(success, "Transfer from target to origin has failed.");
         status = Statuses.PAID;
     }
 
@@ -189,9 +194,9 @@ contract HouseSwap {
      *    - Contract status mut be ACCEPTED
      *    - Also see originCanPay modifier
      */
-    function payFromOriginToTarget() external isOriginOwner originMustPay hasToBeInStatus(Statuses.ACCEPTED) {
+    function payFromOriginToTarget() nonReentrant() external isOriginOwner originMustPay hasToBeInStatus(Statuses.ACCEPTED) {
         bool success = paymentToken.transferFrom(originOwner, targetOwner, amountPayOriginToTarget);
-        require(success, "Transfer from origin to target sent.");
+        require(success, "Transfer from origin to target has failed.");
         status = Statuses.PAID;
     }
 
@@ -220,5 +225,9 @@ contract HouseSwap {
 
     function getSwapOffers() public view returns (uint256) {
         return swapOffersSize;
+    }
+
+    function getOffer(uint256 tokenId) public view returns (Offer memory) {
+        return swapOffers[tokenId];
     }
 }

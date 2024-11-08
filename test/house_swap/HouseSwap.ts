@@ -17,8 +17,8 @@ describe("House Swap Contract", function () {
   let amountPayOriginToTarget: number;
   let amountPayTargetToOrigin: number;
 
-  const tokenIdOrigin = 1;
-  const tokenIdTarget = 2;
+  const tokenIdOrigin: number = 1;
+  const tokenIdTarget: number = 2;
   const tokenUriOrigin = 'https://www.tokenUriOrigin.com';
   const tokenUriTarget = 'https://www.tokenUriTarget.com';
   
@@ -119,6 +119,14 @@ describe("House Swap Contract", function () {
   });
 
   /**
+   * Tests cannot decline unexisting offer
+   */
+  it("Cannot decline unexisting offer", async function () {
+    const unexistingTokenid = 3
+    expect(houseSwapContract.connect(originOwner).declineOffer(unexistingTokenid)).to.be.revertedWith('Swap Offer does not exist');
+  });
+
+  /**
    * Tests AddOffer must revert when token id sent is 0
    */
   it("AddOffer Token Id must be greater than 0", async function () {
@@ -131,7 +139,17 @@ describe("House Swap Contract", function () {
   it("AddOffer sender cannot be address 0", async function () {
     const zeroAddr = await ethers.getSigner(ethers.ZeroAddress);
     expect(houseSwapContract.connect(zeroAddr).addOffer(tokenIdTarget, amountPayOriginToTarget, amountPayTargetToOrigin)).to.be.revertedWith('Cannot be 0 address');
-  })
+  });
+
+  /**
+   * Tests cannot accept unexisting offer
+   */
+  it("Cannot accept unexisting offer", async function () {
+    const unexistingTokenid = 3
+    await houseSwapContract.connect(targetOwner).addOffer(tokenIdTarget, amountPayOriginToTarget, amountPayTargetToOrigin);
+    expect(await houseSwapContract.getSwapOffers()).to.equal(1);
+    expect(houseSwapContract.connect(originOwner).acceptOffer(unexistingTokenid)).to.be.revertedWith('Swap Offer does not exist');
+  });
 
   /**
    * Tests the initial status after the contract is deployed and the status after an offer is accepted
