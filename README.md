@@ -28,6 +28,7 @@ You can deploy the contracts using the hardhat local node. The **scripts** folde
  npx hardhat run scripts/house_swap/deploy.ts
  npx hardhat run scripts/mortgage/deploy.ts
  npx hardhat run scripts/pay_order/deploy.ts
+ npx hardhat run scripts/pledge_loan/deploy.ts
 ```
 
 ## Contracts information
