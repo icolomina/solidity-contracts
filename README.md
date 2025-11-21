@@ -6,8 +6,8 @@
 ## Overview
 This repository contains a set of solidity smart contracts. Each of the contracts represents a specific situation and they can serve as a basis for developing more complex contracts or a decentralized application based on them.
 
-## Important Notice 
-This contracts have not been audited and should not be used directly in a production environment. 
+> [!WARNING]  
+These contracts are educational examples and have not been tested or audited. They are useful for learning and should not be used in production without professional auditing. Please refer to the license for more information.
 
 ## Compile the contracts
 
